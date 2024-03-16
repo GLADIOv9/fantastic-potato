@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slop Factory</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin: 10px;
+        }
+
+        #score, #slop, #employeeCounter, #bossCounter, #managerCounter, #scorePerSecond {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 5px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #employees, #bosses, #managers {
+            margin-top: 10px;
+        }
+
+        #employeeCounter, #bossCounter, #managerCounter {
+            margin-top: 10px;
+        }
+
+        /* Tooltip container */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+        }
+
+        /* Tooltip text */
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 0;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        /* Tooltip arrow */
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #555 transparent transparent transparent;
+        }
+
+        /* Show the tooltip text when you mouse over the tooltip container */
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <h1>Slop Factory</h1>
+    <div id="score">Tachobucks: <span id="scoreValue">0</span></div>
+    <div id="slop">Slop: <span id="slopValue">0</span></div>
+    <div id="employeeCounter">Employees: <span id="employeeCount">0</span> (<span id="employeeRate">0</span> Tachobucks/s, <span id="employeeSlopRate">0</span> Slop/s)</div>
+    <div id="bossCounter">Bosses: <span id="bossCount">0</span></div>
+    <div id="managerCounter">Managers: <span id="managerCount">0</span></div>
+    <div id="scorePerSecond">Tachobucks per second: <span id="scorePerSecondValue">0</span></div>
+    <button id="clickButton">Work</button>
+    <button id="buySlop">Buy Slop (Cost: 10 Tachobucks)</button>
+
+    <div id="employees">
+        <button id="buyEmployee1">Buy 1 Employee (Cost: 10 Slop)</button>
+        <button id="buyEmployee10">Buy 10 Employees (Cost: 100 Slop)</button>
+        <button id="buyAllEmployees">Buy all Employees</button>
+    </div>
+
+    <div id="bosses">
+        <button id="buyBoss1">Buy 1 Boss (Cost: 300 Slop)</button>
+        <button id="buyBoss10">Buy 10 Bosses (Cost: 3000 Slop)</button>
+        <button id="buyAllBosses">Buy all Bosses</button>
+    </div>
+
+    <div id="managers">
+        <h2>Managers (one time purchase)</h2>
+        <div class="tooltip">
+            <button id="buyTachophobicat" title="Provides 10 employees and 10 bosses">Buy Tachophobicat (Cost: 10000 Slop)</button>
+            <span class="tooltiptext">Provides 10 employees and 10 bosses<br/>Tachobucks/s: 20<br/>Slop/s: 20</span>
+        </div>
+        <div class="tooltip">
+            <button id="buyPoposLegend" title="Provides 25 employees and 25 bosses">Buy Popos Legend (Cost: 50000 Slop)</button>
+            <span class="tooltiptext">Provides 25 employees and 25 bosses<br/>Tachobucks/s: 50<br/>Slop/s: 50</span>
+        </div>
+        <div class="tooltip">
+            <button id="buyTakotoFoxyCat" title="Provides 40 employees and 40 bosses">Buy Takoto Foxy Cat (Cost: 10000000 Slop)</button>
+            <span class="tooltiptext">Provides 40 employees and 40 bosses<br/>Tachobucks/s: 80<br/>Slop/s: 80</span>
+        </div>
+        <div class="tooltip">
+            <button id="buyAidan" title="Provides 100 employees and 100 bosses">Buy Aidan (Cost: 5000000 Slop)</button>
+            <span class="tooltiptext">Provides 100 employees and 100 bosses<br/>Tachobucks/s: 200<br/>Slop/s: 200</span>
+        </div>
+        <div class="tooltip">
+            <button id="buyTachophobiBot" title="Provides 50 employees and 50 bosses">Buy Tachophobi-bot (Cost: 250000 Slop)</button>
+            <span class="tooltiptext">Provides 50 employees and 50 bosses<br/>Tachobucks/s: 100<br/>Slop/s: 100</span>
+        </div>
+        <div class="tooltip">
+            <button id="buyChatGPT" title="Provides 100 employees and 100 bosses">Buy ChatGPT (Cost: 1000000 Slop)</button>
+            <span class="tooltiptext">Provides 100 employees and 100 bosses<br/>Tachobucks/s: 200<br/>Slop/s: 200</span>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const scoreDisplay = document.getElementById("scoreValue");
+            const slopDisplay = document.getElementById("slopValue");
+            const scorePerSecondDisplay = document.getElementById("scorePerSecondValue");
+            const employeeCountDisplay = document.getElementById("employeeCount");
+            const employeeRateDisplay = document.getElementById("employeeRate");
+            const employeeSlopRateDisplay = document.getElementById("employeeSlopRate");
+            const workButton = document.getElementById("clickButton");
+            const buyEmployee1Button = document.getElementById("buyEmployee1");
+            const buyEmployee10Button = document.getElementById("buyEmployee10");
+            const buyAllEmployeesButton = document.getElementById("buyAllEmployees");
+
+            let score = 0;
+            let slop = 0;
+            let employees = 0;
+            let bosses = 0;
+            let managers = 0;
+
+            workButton.addEventListener("click", function() {
+                score++;
+                scoreDisplay.textContent = score;
+            });
+
+            buyEmployee1Button.addEventListener("click", function() {
+                buyEmployees(1);
+            });
+
+            buyEmployee10Button.addEventListener("click", function() {
+                buyEmployees(10);
+            });
+
+            buyAllEmployeesButton.addEventListener("click", function() {
+                const maxAffordableEmployees = Math.floor(slop / 10);
+                buyEmployees(maxAffordableEmployees);
+            });
+
+            function buyEmployees(quantity) {
+                const totalCost = quantity * 10;
+                if (slop >= totalCost) {
+                    slop -= totalCost;
+                    employees += quantity;
+                    employeeCountDisplay.textContent = employees;
+                    slopDisplay.textContent = slop;
+                    updateEmployeeRate();
+                }
+            }
+
+            function updateEmployeeRate() {
+                employeeRateDisplay.textContent = employees;
+                employeeSlopRateDisplay.textContent = employees * 2; // Assuming each employee gives 2 Slop/s
+            }
+        });
+    </script>
+</body>
+</html>
